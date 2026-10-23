@@ -1,6 +1,6 @@
 targetScope='resourceGroup'
 
-module static_web_app 'br/public:avm/res/web/static-site:0.9.3' = {
+module static_web_app 'br/public:avm/res/web/static-site:0.9.6' = {
     name: 'solver'
     params: {
         name: 'personal-website-vue-static-web-app'

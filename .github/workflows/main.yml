@@ -1,0 +1,57 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # 7.1.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: |
+          npm install -g @azure/static-web-apps-cli
+          npm ci
+
+      - name: Sign in to Azure
+        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # 3.1.0
+        with:
+          client-id: ${{ secrets.AZURE_DEPLOYMENT_APP_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_DEPLOYMENT_APP_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_DEPLOYMENT_APP_SUBSCRIPTION_ID }}
+
+      - name: Deploy Azure Deployment Stack
+        id: deploystack
+        uses: azure/bicep-deploy@4dc076a544e5297d3aeb3cb972e7614e12f5a55b # 2.4.0
+        with:
+          type: deploymentStack
+          operation: create
+          name: stack-personal-website-vue-static-web-app
+          description: Personal Website Vue Static Web App Deployment Stack
+          location: westeurope
+          scope: resourceGroup
+          subscription-id: ${{ secrets.AZURE_DEPLOYMENT_APP_SUBSCRIPTION_ID }}
+          resource-group-name: rg-personal-website-vue-static-web-app
+          template-file: ./deploy/main.bicep
+          action-on-unmanage-resources: delete
+          deny-settings-mode: denyWriteAndDelete
+          deny-settings-excluded-principals: ${{ secrets.DENY_SETTINGS_EXCLUDED_PRINCIPAL }}
+          deny-settings-apply-to-child-scopes: true

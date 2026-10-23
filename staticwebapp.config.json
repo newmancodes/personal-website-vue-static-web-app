@@ -1,0 +1,14 @@
+{
+  "globalHeaders": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Permitted-Cross-Domain-Policies": "none",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Content-Security-Policy": "default-src 'self'; script-src 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline'",
+    "Permissions-Policy": "geolocation=(), camera=(), microphone=(), payment=()"
+  }
+}

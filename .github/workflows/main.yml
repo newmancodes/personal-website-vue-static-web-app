@@ -26,11 +26,14 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+      - name: Upgrade npm
+        run: npm install -g npm@12
+
+      - name: Install Static Web Apps CLI
+        run: npm install -g --allow-scripts=keytar @azure/static-web-apps-cli
+
       - name: Install Node dependencies
-        run: |
-          npm install -g npm@12
-          npm install -g --allow-scripts=keytar @azure/static-web-apps-cli
-          npm ci
+        run: npm ci
 
       - name: Sign in to Azure
         uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # 3.1.0
